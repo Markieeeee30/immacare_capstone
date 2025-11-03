@@ -14,7 +14,8 @@ app.use(cors()); // Enable CORS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from public directory
+// Serve static files from root directory and public directory
+app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   "/bootstrap",
@@ -34,11 +35,10 @@ app.use(
 );
 app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist"));
 
-// Root route - redirect to main.html
+// Root route - serve homepage
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "main.html"));
+  res.sendFile(path.join(__dirname, "public", "homepage", "homepage.html"));
 });
-app.use(express.static("public"));
 
 // Create MySQL connection using environment variables
 const connection = mysql.createConnection({
