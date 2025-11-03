@@ -5,14 +5,17 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors"); // ✅ Fix for CORS
 const mysql = require("mysql"); // ✅ Fix added
+require('dotenv').config(); // Load environment variables
 const app = express();
 
 
+// Middleware
 app.use(cors()); // Enable CORS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "web_immacare")));
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, "public")));
 app.use(
   "/bootstrap",
   express.static(path.join(__dirname, "node_modules/bootstrap/dist"))
@@ -30,27 +33,19 @@ app.use(
   express.static(__dirname + "/node_modules/datatables.net-dt")
 );
 app.use("/jquery", express.static(__dirname + "/node_modules/jquery/dist"));
+
+// Root route - redirect to main.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "web_immacare", "main.html"));
+  res.sendFile(path.join(__dirname, "main.html"));
 });
-
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}/login/login.html`);
-});
-
-// Middleware
-app.use(bodyParser.json());
-app.use(cors()); // Allow all origins for simplicity; configure for production
-app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static("public"));
 
-// Create MySQL connection
+// Create MySQL connection using environment variables
 const connection = mysql.createConnection({
-  host: "localhost", // or your DB host
-  user: "root", // your MySQL username
-  password: "", // your MySQL password
-  database: "immacare_db", // your database name
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "immacare_db",
 });
 
 // Connect to database
@@ -69,7 +64,7 @@ const session = require("express-session");
 
 app.use(
   session({
-    secret: "your-secret-key", // use a strong secret in production, store safely
+    secret: process.env.SESSION_SECRET || "your-secret-key-change-this", // use a strong secret in production, store safely
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
     cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day (in milliseconds)
@@ -1865,3 +1860,11 @@ app.get("/getAllPatients", (req, res) => {
 
 // me
 
+// Start server with Vercel-compatible port
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Export for Vercel
+module.exports = app;
