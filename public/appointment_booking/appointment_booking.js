@@ -877,6 +877,41 @@ function validateStep2() {
 }
 
 //step 3
+// function validateStep3() {
+//   const requiredFields = ["name", "relationship", "mobileNum3"];
+//   let isValid = true;
+//   let firstInvalidField = null;
+
+//   requiredFields.forEach((id) => {
+//     const field = document.getElementById(id);
+//     if (!field) return;
+
+//     const value = field.value.trim();
+
+//     const isEmpty =
+//       !value || (id === "relationship" && value === "Select Relationship");
+
+//     if (isEmpty) {
+//       field.classList.add("is-invalid");
+//       if (!firstInvalidField) firstInvalidField = field;
+//       isValid = false;
+//     } else {
+//       field.classList.remove("is-invalid");
+//     }
+//   });
+
+//   if (!isValid) {
+//     Swal.fire({
+//       title: "",
+//       text: "Please complete all required fields before continuing.",
+//       icon: "error",
+//     });
+//     if (firstInvalidField) firstInvalidField.focus();
+//   }
+
+//   return isValid;
+// }
+// step 3
 function validateStep3() {
   const requiredFields = ["name", "relationship", "mobileNum3"];
   let isValid = true;
@@ -888,19 +923,80 @@ function validateStep3() {
 
     const value = field.value.trim();
 
-    const isEmpty =
-      !value || (id === "relationship" && value === "Select Relationship");
+    // --- 1️⃣ Name validation ---
+    if (id === "name") {
+      if (!value) {
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+        return;
+      }
+      if (/\d/.test(value)) {
+        Swal.fire({
+          icon: "error",
+          text: "Name cannot contain numbers.",
+        });
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+        return;
+      }
+    }
 
-    if (isEmpty) {
-      field.classList.add("is-invalid");
-      if (!firstInvalidField) firstInvalidField = field;
-      isValid = false;
-    } else {
-      field.classList.remove("is-invalid");
+    // --- 2️⃣ Relationship validation ---
+    else if (id === "relationship") {
+      const isEmpty = !value || value === "Select Relationship";
+      if (isEmpty) {
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+      }
+    }
+
+    // --- 3️⃣ Mobile number validation ---
+    else if (id === "mobileNum3") {
+      let mobileValue = value;
+
+      // Auto-add "639" if missing
+      if (!mobileValue.startsWith("639") && mobileValue.length > 0) {
+        mobileValue = "639" + mobileValue.replace(/^0+/, "");
+        field.value = mobileValue;
+      }
+
+      // Empty field
+      if (!mobileValue) {
+        Swal.fire({
+          icon: "error",
+          text: "Mobile number is required.",
+        });
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+        return;
+      }
+
+      // Must start with 639
+      if (!mobileValue.startsWith("639")) {
+        Swal.fire({
+          icon: "error",
+          text: "Mobile number must start with 639.",
+        });
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+        return;
+      }
+
+      // Must be exactly 12 digits
+      if (mobileValue.length !== 12) {
+        Swal.fire({
+          icon: "error",
+          text: "Mobile number must be 12 digits (including 639).",
+        });
+        if (!firstInvalidField) firstInvalidField = field;
+        isValid = false;
+        return;
+      }
     }
   });
 
-  if (!isValid) {
+  // Global error message
+  if (!isValid && !Swal.isVisible()) {
     Swal.fire({
       title: "",
       text: "Please complete all required fields before continuing.",
@@ -912,7 +1008,99 @@ function validateStep3() {
   return isValid;
 }
 
+// --- Name and Mobile live input behavior ---
+document.addEventListener("DOMContentLoaded", () => {
+  const nameField = document.getElementById("name");
+  const mobileField = document.getElementById("mobileNum3");
+
+  //  Prevent typing numbers in name (silently)
+  if (nameField) {
+    nameField.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/[0-9]/g, ""); // just remove numbers
+    });
+  }
+
+  //  Mobile number logic
+  if (mobileField) {
+    // Always start with 639
+    if (!mobileField.value.startsWith("639")) {
+      mobileField.value = "639";
+    }
+
+    // Auto-format on input
+    mobileField.addEventListener("input", (e) => {
+      let val = e.target.value;
+
+      // Always keep 639 prefix
+      if (!val.startsWith("639")) {
+        val = "639";
+      }
+
+      // Limit to 12 digits
+      if (val.length > 12) {
+        val = val.slice(0, 12);
+      }
+
+      e.target.value = val;
+    });
+
+    // Allow backspace but protect 639
+    mobileField.addEventListener("keydown", (e) => {
+      const start = mobileField.selectionStart;
+
+      // Prevent deleting "639"
+      if (
+        (e.key === "Backspace" && start <= 3) ||
+        (e.key === "Delete" && start < 3)
+      ) {
+        e.preventDefault();
+      }
+    });
+  }
+});
+
 //step4
+// function validateStep4() {
+//   const requiredFields = [
+//     "bloodType",
+//     "alergies",
+//     "currentMedication",
+//     "pastMedicalConditions",
+//     "chronicIllnes",
+//   ];
+
+//   let isValid = true;
+//   let firstInvalidField = null;
+
+//   requiredFields.forEach((id) => {
+//     const field = document.getElementById(id);
+//     if (!field) return;
+
+//     const value = field.value.trim();
+
+//     const isEmpty =
+//       !value || (id === "bloodType" && value === "Select Bloodtype");
+
+//     if (isEmpty) {
+//       field.classList.add("is-invalid");
+//       if (!firstInvalidField) firstInvalidField = field;
+//       isValid = false;
+//     } else {
+//       field.classList.remove("is-invalid");
+//     }
+//   });
+
+//   if (!isValid) {
+//     Swal.fire({
+//       title: "",
+//       text: "Please fill in all required fields with valid information or enter 'NA' if not applicable.",
+//       icon: "error",
+//     });
+//     if (firstInvalidField) firstInvalidField.focus();
+//   }
+
+//   return isValid;
+// }
 function validateStep4() {
   const requiredFields = [
     "bloodType",
@@ -931,6 +1119,7 @@ function validateStep4() {
 
     const value = field.value.trim();
 
+    // --- 1️⃣ Basic empty field validation ---
     const isEmpty =
       !value || (id === "bloodType" && value === "Select Bloodtype");
 
@@ -938,12 +1127,29 @@ function validateStep4() {
       field.classList.add("is-invalid");
       if (!firstInvalidField) firstInvalidField = field;
       isValid = false;
-    } else {
-      field.classList.remove("is-invalid");
+      return;
     }
+
+    // --- 2️⃣ Prevent numbers in text fields ---
+    if (
+      id !== "bloodType" && // blood type can have symbols like A+, B-
+      /\d/.test(value)
+    ) {
+      field.classList.add("is-invalid");
+      if (!firstInvalidField) firstInvalidField = field;
+      Swal.fire({
+        icon: "error",
+        text: `Numbers are not allowed in "${id.replace(/([A-Z])/g, " $1")}".`,
+      });
+      isValid = false;
+      return;
+    }
+
+    field.classList.remove("is-invalid");
   });
 
-  if (!isValid) {
+  // --- Global alert if incomplete ---
+  if (!isValid && !Swal.isVisible()) {
     Swal.fire({
       title: "",
       text: "Please fill in all required fields with valid information or enter 'NA' if not applicable.",
@@ -955,6 +1161,25 @@ function validateStep4() {
   return isValid;
 }
 
+// --- Optional: live restriction (user can't type numbers) ---
+document.addEventListener("DOMContentLoaded", () => {
+  const noNumberFields = [
+    "alergies",
+    "currentMedication",
+    "pastMedicalConditions",
+    "chronicIllnes",
+  ];
+
+  noNumberFields.forEach((id) => {
+    const field = document.getElementById(id);
+    if (!field) return;
+
+    field.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/[0-9]/g, ""); // silently remove numbers
+    });
+  });
+});
+  
 //step5
 function validateStep5() {
   const labelIds = [

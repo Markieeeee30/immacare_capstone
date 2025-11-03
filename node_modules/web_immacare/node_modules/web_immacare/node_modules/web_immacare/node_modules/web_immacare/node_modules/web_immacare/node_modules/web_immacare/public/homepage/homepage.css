@@ -173,6 +173,7 @@
   width: 220px;
   padding: 20px;
   animation: slideUpFade 0.6s ease forwards;
+ 
 }
 
 .card_icon {
@@ -257,6 +258,42 @@
 .cards_wrapper .card:nth-child(7) {
   animation-delay: 0.7s;
 }
+.cards_wrapper .card:nth-child(8) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(9) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(10) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(11) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(12) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(13) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(14) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(15) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(16) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(17) {
+  animation-delay: 0.7s;
+}
+.cards_wrapper .card:nth-child(18) {
+  animation-delay: 0.7s;
+}.cards_wrapper .card:nth-child(19) {
+  animation-delay: 0.7s;
+}
+
 .cards_wrapper .card:nth-child(😎) {
   animation-delay: 0.8s;
 }
@@ -317,6 +354,10 @@
   /* max-width: 900px; */
   margin: 60px auto; /* <-- Centers it and adds top/bottom space */
   transition: all 0.4s ease-in-out;
+}
+
+.help-text p {
+  color: white;
 }
 
 .help-section:hover {

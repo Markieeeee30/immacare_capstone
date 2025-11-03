@@ -221,3 +221,70 @@ function discardChanges() {
   $("#addItem").modal("hide");
   $("#updateItem").modal("hide");
 }
+
+// inventory.js (inside $(document).ready function)
+
+// let table;
+// $(document).re.ady(function () {
+//   table = $("#inventoryTable").DataTable({
+//     columns: [
+//       { data: "item" },
+//       { data: "category" },
+//       { data: "unit" },
+//       { data: "beginning_balance" },
+//       { data: "adjustments" },
+//       { data: "total_available" },
+//       { data: "actual_stock" },
+//       { data: "qty_used" },
+//       { data: "qty_wasted" },
+//       { data: "months_usage" },
+//       { data: "abl" },
+//       { data: "qty_required" },
+//       { data: "stock" },
+//       { data: "ending_balance" },
+//       { data: "price" },
+//       {
+//         data: "status",
+//         render: function (data, type, row) {
+//           let statusClass =
+//             data.toLowerCase() === "out of stock"
+//               ? "badge bg-danger"
+//               : data.toLowerCase() === "in stock"
+//               ? "badge bg-success"
+//               : "badge bg-secondary";
+//           return `<span class="${statusClass}">${data}</span>`;
+//         },
+//       },
+//       {
+//         data: null,
+//         orderable: false,
+//         searchable: false,
+//         render: function (data, type, row) {
+//           return `<button class="btn btn-warning btn-sm get-item-btn" data-bs-toggle="modal" data-bs-target="#updateItem" data-bs-backdrop="false" data-id="${row.id}">Update Item</button>`;
+//         },
+//       },
+//     ],
+
+//     columnDefs: [{ targets: 1, width: "10%" }],
+
+//     searching: false,
+//     lengthChange: false,
+//     dom: "Bfrtip",
+//     buttons: ["excel", "pdf"],
+//     responsive: true,
+//     ajax: {
+//       url: "/getInventory",
+//       dataSrc: "data",
+//       data: function (d) {
+//         d.item = $("#itemSearch").val();
+//         d.status = $("#ItemStatus").val();
+//       },
+//     },
+//   });
+
+//   $("#ItemStatus").on("change", function () {
+//     table.ajax.reload();
+//   });
+
+//   // The rest of your existing JS functions (saveItem, searchInventory, etc.) follow here...
+// });
