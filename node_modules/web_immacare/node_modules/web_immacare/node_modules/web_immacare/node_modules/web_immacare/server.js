@@ -131,7 +131,7 @@ const transporter = nodemailer.createTransport({
 
 // --- Routes ---
 app.get("/", (req, res) => res.redirect("/landing"));
-app.get("/landing", (req, res) => res.sendFile(path.join(__dirname, "landing", "landingpage.html")));
+app.get("/landing", (req, res) => res.sendFile(path.join(__dirname, "web_immacare", "landingpage", "landingpage.html")));
 
 // =================================================================
 // --- AUTHENTICATION & REGISTRATION API ENDPOINTS ---
@@ -812,7 +812,7 @@ app.get("/getAllPatients", async (req, res) => {
 
 
 // --- Server Start ---
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running athttp://localhost:${PORT}/landingpage/landingpage.html`);
 });
