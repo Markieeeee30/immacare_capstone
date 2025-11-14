@@ -133,7 +133,7 @@ const transporter = nodemailer.createTransport({
 app.use(express.static(path.join(__dirname, "public")));
 
 // Change the root route from serving 'main.html' to redirecting to '/landing'
-app.get("/", (req, res) => res.redirect("/landing")); 
+app.get("/", (req, res) => res.redirect("/landingpage.html")); 
 
 // Change the /landing route to use the correct path based on your file structure
 app.get("/landing", (req, res) => res.sendFile(path.join(__dirname, "public", "landingpage", "landingpage.html")));
