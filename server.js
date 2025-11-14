@@ -847,7 +847,7 @@ app.get("/getAllPatients", async (req, res) => {
 // --- Server Start ---
 const PORT = process.env.PORT || 3000; // <--- ADD || 3000 FOR LOCAL FALLBACK
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}/landingpage/landingpage.html`);
+  console.log(`Server is running at http://localhost:${PORT}/landingpage.html`);
 });
 
 
