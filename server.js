@@ -20,8 +20,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- Static File Serving ---
-app.use(express.static(path.join(__dirname, "web_immacare")));
+//app.use(express.static(path.join(__dirname, "web_immacare")));
 app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/bootstrap", express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 app.use("/bootstrap-icons", express.static(path.join(__dirname, "node_modules/bootstrap-icons")));
 app.use("/datatables.net", express.static(path.join(__dirname, "node_modules/datatables.net")));
@@ -129,18 +130,44 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// serve static file (css, js, images)
-app.use(express.static(path.join(__dirname, "public")));
+
 
 // Change the root route from serving 'main.html' to redirecting to '/landing'
 app.get("/", (req, res) => res.redirect("/landingpage.html")); 
 
 // Change the /landing route to use the correct path based on your file structure
-app.get("/landing", (req, res) => res.sendFile(path.join(__dirname, "public", "landingpage", "landingpage.html")));
+app.get("/landingpage.html", (req, res) => res.sendFile(path.join(__dirname, "public", "landingpage", "landingpage.html")));
 
+// Route 3: Alternative /landing route
+app.get("/landing", (req, res) => {
+    res.redirect("/landingpage.html");
+});
+
+// Route for other landing page services
+app.get("/2d_echo.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "landingpage", "2d_echo.html"));
+});
+
+app.get("/earpiercing.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "landingpage", "earpiercing.html"));
+});
+
+// Add routes for other service pages as needed...
+app.get("/ecg.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "landingpage", "ecg.html"));
+});
+
+app.get("/ent.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "landingpage", "ent.html"));
+});
 // =================================================================
 // --- AUTHENTICATION & REGISTRATION API ENDPOINTS ---
 // =================================================================
+
+// This serves the login.html file when someone visits /login
+app.get("/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "login", "login.html"));
+});
 
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
