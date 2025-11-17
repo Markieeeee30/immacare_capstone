@@ -40,228 +40,459 @@
 //   alert("Error loading data. Please try again.");
 // }
 
-$(document).ready(function () {
-  const table = $("#dashboardTable").DataTable({
-    searching: false,
-    responsive: true,
-    lengthChange: false,
-    info: false,
-  });
+// $(document).ready(function () {
+//   const table = $("#dashboardTable").DataTable({
+//     searching: false,
+//     responsive: true,
+//     lengthChange: false,
+//     info: false,
+//   });
 
-  // const ctx = document.getElementById("myChart").getContext("2d");
+//   // const ctx = document.getElementById("myChart").getContext("2d");
 
-  // const myChart = new Chart(ctx, {
-  //   type: "bar", // or 'line', 'pie', etc.
-  //   data: {
-  //     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-  //     datasets: [
-  //       {
-  //         label: "Sample Votes",
-  //         data: [12, 19, 3, 5, 2, 3],
-  //         backgroundColor: [
-  //           "rgba(255, 99, 132, 0.2)",
-  //           "rgba(54, 162, 235, 0.2)",
-  //           "rgba(255, 206, 86, 0.2)",
-  //           "rgba(75, 192, 192, 0.2)",
-  //           "rgba(153, 102, 255, 0.2)",
-  //           "rgba(255, 159, 64, 0.2)",
-  //         ],
-  //         borderColor: [
-  //           "rgba(255,99,132,1)",
-  //           "rgba(54,162,235,1)",
-  //           "rgba(255,206,86,1)",
-  //           "rgba(75,192,192,1)",
-  //           "rgba(153,102,255,1)",
-  //           "rgba(255,159,64,1)",
-  //         ],
-  //         borderWidth: 1,
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     responsive: true,
-  //     scales: {
-  //       y: {
-  //         beginAtZero: true,
-  //       },
-  //     },
-  //   },
-  // });
+//   // const myChart = new Chart(ctx, {
+//   //   type: "bar", // or 'line', 'pie', etc.
+//   //   data: {
+//   //     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+//   //     datasets: [
+//   //       {
+//   //         label: "Sample Votes",
+//   //         data: [12, 19, 3, 5, 2, 3],
+//   //         backgroundColor: [
+//   //           "rgba(255, 99, 132, 0.2)",
+//   //           "rgba(54, 162, 235, 0.2)",
+//   //           "rgba(255, 206, 86, 0.2)",
+//   //           "rgba(75, 192, 192, 0.2)",
+//   //           "rgba(153, 102, 255, 0.2)",
+//   //           "rgba(255, 159, 64, 0.2)",
+//   //         ],
+//   //         borderColor: [
+//   //           "rgba(255,99,132,1)",
+//   //           "rgba(54,162,235,1)",
+//   //           "rgba(255,206,86,1)",
+//   //           "rgba(75,192,192,1)",
+//   //           "rgba(153,102,255,1)",
+//   //           "rgba(255,159,64,1)",
+//   //         ],
+//   //         borderWidth: 1,
+//   //       },
+//   //     ],
+//   //   },
+//   //   options: {
+//   //     responsive: true,
+//   //     scales: {
+//   //       y: {
+//   //         beginAtZero: true,
+//   //       },
+//   //     },
+//   //   },
+//   // });
 
-  $.get("/appointment-count", function (data) {
-    $("#appointmentCount").text(data.total_booked);
-  }).fail(function (xhr) {
-    alert(xhr.responseJSON.message);
-  });
+//   $.get("/appointment-count", function (data) {
+//     $("#appointmentCount").text(data.total_booked);
+//   }).fail(function (xhr) {
+//     alert(xhr.responseJSON.message);
+//   });
 
-  $.get("/appointment-count-today", function (data) {
-    $("#patientTodayCount").text(data.total_booked_today);
-  }).fail(function (xhr) {
-    alert(xhr.responseJSON.message);
-  });
+//   $.get("/appointment-count-today", function (data) {
+//     $("#patientTodayCount").text(data.total_booked_today);
+//   }).fail(function (xhr) {
+//     alert(xhr.responseJSON.message);
+//   });
 
-  $.get("/overall_patients", function (data) {
-    $("#patientCount").text(data.patient_count);
-  }).fail(function (xhr) {
-    alert(xhr.responseJSON.message);
-  });
+//   $.get("/overall_patients", function (data) {
+//     $("#patientCount").text(data.patient_count);
+//   }).fail(function (xhr) {
+//     alert(xhr.responseJSON.message);
+//   });
 
-  $.get("/item-inventory-count", function (data) {
-    $("#inventoryCount").text(data.inventory_count);
-  }).fail(function (xhr) {
-    alert(xhr.responseJSON.message);
-  });
-});
+//   $.get("/item-inventory-count", function (data) {
+//     $("#inventoryCount").text(data.inventory_count);
+//   }).fail(function (xhr) {
+//     alert(xhr.responseJSON.message);
+//   });
+// });
 
-function PatientToday() {
-  if ($.fn.DataTable.isDataTable("#dashboardTable")) {
-    $("#dashboardTable").DataTable().destroy();
-    $("#dashboardTable").empty();
-  }
+// function PatientToday() {
+//   if ($.fn.DataTable.isDataTable("#dashboardTable")) {
+//     $("#dashboardTable").DataTable().destroy();
+//     $("#dashboardTable").empty();
+//   }
 
-  const columns = [
-    { title: "Patient Name", data: "patient_name" },
-    { title: "Consultation Type", data: "consultation_type" },
-    { title: "Status", data: "status" },
-  ];
+//   const columns = [
+//     { title: "Patient Name", data: "patient_name" },
+//     { title: "Consultation Type", data: "consultation_type" },
+//     { title: "Status", data: "status" },
+//   ];
 
-  $.ajax({
-    url: "/getPatientsToday",
-    method: "GET",
-    dataType: "json",
-    success: function (response) {
-      if (response && Array.isArray(response)) {
-        $("#dashboardTable").DataTable({
-          data: response,
-          columns: columns,
-          paging: true,
-          searching: true,
-          info: true,
-          responsive: true,
-        });
+//   $.ajax({
+//     url: "/getPatientsToday",
+//     method: "GET",
+//     dataType: "json",
+//     success: function (response) {
+//       if (response && Array.isArray(response)) {
+//         $("#dashboardTable").DataTable({
+//           data: response,
+//           columns: columns,
+//           paging: true,
+//           searching: true,
+//           info: true,
+//           responsive: true,
+//         });
 
-        $("#dashboardTable").css("display", "table"); // Use 'table' if it's a <table> element
-      } else {
-        console.error("Invalid data format received:", response);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX Error:", status, error);
-      alert("Error loading patient data. Please try again.");
-    },
-  });
-}
+//         $("#dashboardTable").css("display", "table"); // Use 'table' if it's a <table> element
+//       } else {
+//         console.error("Invalid data format received:", response);
+//       }
+//     },
+//     error: function (xhr, status, error) {
+//       console.error("AJAX Error:", status, error);
+//       alert("Error loading patient data. Please try again.");
+//     },
+//   });
+// }
 
-function Bookings() {
-  if ($.fn.DataTable.isDataTable("#dashboardTable")) {
-    $("#dashboardTable").DataTable().destroy();
-    $("#dashboardTable").empty();
-  }
+// function Bookings() {
+//   if ($.fn.DataTable.isDataTable("#dashboardTable")) {
+//     $("#dashboardTable").DataTable().destroy();
+//     $("#dashboardTable").empty();
+//   }
 
-  const columns = [
-    { title: "Patient Name", data: "patient_name" },
-    { title: "Consultation Type", data: "consultation_type" },
-    { title: "Status", data: "status" },
-  ];
+//   const columns = [
+//     { title: "Patient Name", data: "patient_name" },
+//     { title: "Consultation Type", data: "consultation_type" },
+//     { title: "Status", data: "status" },
+//   ];
 
-  $.ajax({
-    url: "/getBookings",
-    method: "GET",
-    dataType: "json",
-    success: function (response) {
-      if (response && Array.isArray(response)) {
-        $("#dashboardTable").DataTable({
-          data: response,
-          columns: columns,
-          paging: true,
-          searching: true,
-          info: true,
-          responsive: true,
-        });
-      } else {
-        console.error("Invalid data format received:", response);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX Error:", status, error);
-      alert("Error loading patient data. Please try again.");
-    },
-  });
-}
+//   $.ajax({
+//     url: "/getBookings",
+//     method: "GET",
+//     dataType: "json",
+//     success: function (response) {
+//       if (response && Array.isArray(response)) {
+//         $("#dashboardTable").DataTable({
+//           data: response,
+//           columns: columns,
+//           paging: true,
+//           searching: true,
+//           info: true,
+//           responsive: true,
+//         });
+//       } else {
+//         console.error("Invalid data format received:", response);
+//       }
+//     },
+//     error: function (xhr, status, error) {
+//       console.error("AJAX Error:", status, error);
+//       alert("Error loading patient data. Please try again.");
+//     },
+//   });
+// }
 
-function getInventory() {
-  if ($.fn.DataTable.isDataTable("#dashboardTable")) {
-    $("#dashboardTable").DataTable().destroy();
-    $("#dashboardTable").empty();
-  }
+// function getInventory() {
+//   if ($.fn.DataTable.isDataTable("#dashboardTable")) {
+//     $("#dashboardTable").DataTable().destroy();
+//     $("#dashboardTable").empty();
+//   }
 
-  const columns = [
-    { title: "Item", data: "item" },
-    { title: "Category", data: "category" },
-    { title: "Quantity", data: "quantity" },
-    { title: "Status", data: "status" },
-  ];
+//   const columns = [
+//     { title: "Item", data: "item" },
+//     { title: "Category", data: "category" },
+//     { title: "Quantity", data: "quantity" },
+//     { title: "Status", data: "status" },
+//   ];
 
-  $.ajax({
-    url: "/getInventoryDashboard",
-    method: "GET",
-    dataType: "json",
-    success: function (response) {
-      if (response && Array.isArray(response)) {
-        $("#dashboardTable").DataTable({
-          data: response,
-          columns: columns,
-          paging: true,
-          searching: true,
-          info: true,
-          responsive: true,
-        });
-      } else {
-        console.error("Invalid data format received:", response);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX Error:", status, error);
-      alert("Error loading patient data. Please try again.");
-    },
-  });
-}
+//   $.ajax({
+//     url: "/getInventoryDashboard",
+//     method: "GET",
+//     dataType: "json",
+//     success: function (response) {
+//       if (response && Array.isArray(response)) {
+//         $("#dashboardTable").DataTable({
+//           data: response,
+//           columns: columns,
+//           paging: true,
+//           searching: true,
+//           info: true,
+//           responsive: true,
+//         });
+//       } else {
+//         console.error("Invalid data format received:", response);
+//       }
+//     },
+//     error: function (xhr, status, error) {
+//       console.error("AJAX Error:", status, error);
+//       alert("Error loading patient data. Please try again.");
+//     },
+//   });
+// }
 
-function getAllPatients() {
-  if ($.fn.DataTable.isDataTable("#dashboardTable")) {
-    $("#dashboardTable").DataTable().destroy();
-    $("#dashboardTable").empty();
-  }
+// function getAllPatients() {
+//   if ($.fn.DataTable.isDataTable("#dashboardTable")) {
+//     $("#dashboardTable").DataTable().destroy();
+//     $("#dashboardTable").empty();
+//   }
 
-  const columns = [
-    { title: "Patient Name", data: "fullname" },
-    { title: "Gender", data: "gender" },
-    { title: "Age", data: "age" },
-    { title: "Contact Number", data: "mobile_number" },
-    { title: "Email Address", data: "email_address" },
-  ];
+//   const columns = [
+//     { title: "Patient Name", data: "fullname" },
+//     { title: "Gender", data: "gender" },
+//     { title: "Age", data: "age" },
+//     { title: "Contact Number", data: "mobile_number" },
+//     { title: "Email Address", data: "email_address" },
+//   ];
 
-  $.ajax({
-    url: "/getAllPatients",
-    method: "GET",
-    dataType: "json",
-    success: function (response) {
-      if (response && Array.isArray(response)) {
-        $("#dashboardTable").DataTable({
-          data: response,
-          columns: columns,
-          paging: true,
-          searching: true,
-          info: true,
-          responsive: true,
-        });
-      } else {
-        console.error("Invalid data format received:", response);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX Error:", status, error);
-      alert("Error loading patient data. Please try again.");
-    },
-  });
+//   $.ajax({
+//     url: "/getAllPatients",
+//     method: "GET",
+//     dataType: "json",
+//     success: function (response) {
+//       if (response && Array.isArray(response)) {
+//         $("#dashboardTable").DataTable({
+//           data: response,
+//           columns: columns,
+//           paging: true,
+//           searching: true,
+//           info: true,
+//           responsive: true,
+//         });
+//       } else {
+//         console.error("Invalid data format received:", response);
+//       }
+//     },
+//     error: function (xhr, status, error) {
+//       console.error("AJAX Error:", status, error);
+//       alert("Error loading patient data. Please try again.");
+//     },
+//   });
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function () { 
+  // ===== PROTECT DASHBOARD - Check if admin/staff ===== 
+  $.get("/homepage") 
+    .done(function (data) { 
+      const role = data.role; 
+       
+      // Only admin and staff can access 
+      if (role !== 'admin' && role !== 'staff') { 
+        alert('Access denied. This page is for administrators only.'); 
+         
+        // Redirect based on role 
+        if (role === 'patient') { 
+          window.location.href = '/appointment_booking/appointment_booking.html'; 
+        } else if (role === 'doctor') { 
+          window.location.href = '/doctor/doctors.html'; 
+        } else { 
+          window.location.href = '/login'; 
+        } 
+        return; // Stop execution 
+      } 
+       
+      // If admin/staff, load dashboard data 
+      loadDashboardData(); 
+    }) 
+    .fail(function () { 
+      // Not logged in 
+      alert('Please login first.'); 
+      window.location.href = '/login'; 
+    }); 
+}); 
+ 
+// Function to load all dashboard data (only runs if admin/staff) 
+function loadDashboardData() { 
+  // Initialize DataTable 
+  const table = $("#dashboardTable").DataTable({ 
+    searching: false, 
+    responsive: true, 
+    lengthChange: false, 
+    info: false, 
+  }); 
+ 
+  // Load dashboard counts 
+  $.get("/appointment-count", function (data) { 
+    $("#appointmentCount").text(data.total_booked); 
+  }).fail(function (xhr) { 
+    alert(xhr.responseJSON?.message || "Error loading appointment count"); 
+  }); 
+ 
+  $.get("/appointment-count-today", function (data) { 
+    $("#patientTodayCount").text(data.total_booked_today); 
+  }).fail(function (xhr) { 
+    alert(xhr.responseJSON?.message || "Error loading today's count"); 
+  }); 
+ 
+  $.get("/overall_patients", function (data) { 
+    $("#patientCount").text(data.patient_count); 
+  }).fail(function (xhr) { 
+    alert(xhr.responseJSON?.message || "Error loading patient count"); 
+  }); 
+ 
+  $.get("/item-inventory-count", function (data) { 
+    $("#inventoryCount").text(data.inventory_count); 
+  }).fail(function (xhr) { 
+    alert(xhr.responseJSON?.message || "Error loading inventory count"); 
+  }); 
+} 
+ 
+function PatientToday() { 
+  if ($.fn.DataTable.isDataTable("#dashboardTable")) { 
+    $("#dashboardTable").DataTable().destroy(); 
+    $("#dashboardTable").empty(); 
+  } 
+ 
+  const columns = [ 
+    { title: "Patient Name", data: "patient_name" }, 
+    { title: "Consultation Type", data: "consultation_type" }, 
+    { title: "Status", data: "status" }, 
+  ]; 
+ 
+  $.ajax({ 
+    url: "/getPatientsToday", 
+    method: "GET", 
+    dataType: "json", 
+    success: function (response) { 
+      if (response && Array.isArray(response)) { 
+        $("#dashboardTable").DataTable({ 
+          data: response, 
+          columns: columns, 
+          paging: true, 
+          searching: true, 
+          info: true, 
+          responsive: true, 
+        }); 
+ 
+        $("#dashboardTable").css("display", "table"); 
+      } else { 
+        console.error("Invalid data format received:", response); 
+      } 
+    }, 
+    error: function (xhr, status, error) { 
+      console.error("AJAX Error:", status, error); 
+      alert("Error loading patient data. Please try again."); 
+    }, 
+  }); 
+} 
+ 
+function Bookings() { 
+  if ($.fn.DataTable.isDataTable("#dashboardTable")) { 
+    $("#dashboardTable").DataTable().destroy(); 
+    $("#dashboardTable").empty(); 
+  } 
+ 
+  const columns = [ 
+    { title: "Patient Name", data: "patient_name" }, 
+    { title: "Consultation Type", data: "consultation_type" }, 
+    { title: "Status", data: "status" }, 
+  ]; 
+ 
+  $.ajax({ 
+    url: "/getBookings", 
+    method: "GET", 
+    dataType: "json", 
+    success: function (response) { 
+      if (response && Array.isArray(response)) { 
+        $("#dashboardTable").DataTable({ 
+          data: response, 
+          columns: columns, 
+          paging: true, 
+          searching: true, 
+          info: true, 
+          responsive: true, 
+        }); 
+      } else { 
+        console.error("Invalid data format received:", response); 
+      } 
+    }, 
+    error: function (xhr, status, error) { 
+      console.error("AJAX Error:", status, error); 
+      alert("Error loading patient data. Please try again."); 
+    }, 
+  }); 
+} 
+ 
+function getInventory() { 
+  if ($.fn.DataTable.isDataTable("#dashboardTable")) { 
+    $("#dashboardTable").DataTable().destroy(); 
+    $("#dashboardTable").empty(); 
+  } 
+ 
+  const columns = [ 
+    { title: "Item", data: "item" }, 
+    { title: "Category", data: "category" }, 
+    { title: "Quantity", data: "quantity" }, 
+    { title: "Status", data: "status" }, 
+  ]; 
+ 
+  $.ajax({ 
+    url: "/getInventoryDashboard", 
+    method: "GET", 
+    dataType: "json", 
+    success: function (response) { 
+      if (response && Array.isArray(response)) { 
+        $("#dashboardTable").DataTable({ 
+          data: response, 
+          columns: columns, 
+          paging: true, 
+          searching: true, 
+          info: true, 
+          responsive: true, 
+        }); 
+      } else { 
+        console.error("Invalid data format received:", response); 
+      } 
+    }, 
+    error: function (xhr, status, error) { 
+      console.error("AJAX Error:", status, error); 
+      alert("Error loading patient data. Please try again."); 
+    }, 
+  }); 
+} 
+ 
+function getAllPatients() { 
+  if ($.fn.DataTable.isDataTable("#dashboardTable")) { 
+    $("#dashboardTable").DataTable().destroy(); 
+    $("#dashboardTable").empty(); 
+  } 
+ 
+  const columns = [ 
+    { title: "Patient Name", data: "fullname" }, 
+    { title: "Gender", data: "gender" }, 
+    { title: "Age", data: "age" }, 
+    { title: "Contact Number", data: "mobile_number" }, 
+    { title: "Email Address", data: "email_address" }, 
+  ]; 
+ 
+  $.ajax({ 
+    url: "/getAllPatients", 
+    method: "GET", 
+    dataType: "json", 
+    success: function (response) { 
+      if (response && Array.isArray(response)) { 
+        $("#dashboardTable").DataTable({ 
+          data: response, 
+          columns: columns, 
+          paging: true, 
+          searching: true, 
+          info: true, 
+          responsive: true, 
+        }); 
+      } else { 
+        console.error("Invalid data format received:", response); 
+      } 
+    }, 
+    error: function (xhr, status, error) { 
+      console.error("AJAX Error:", status, error); 
+      alert("Error loading patient data. Please try again."); 
+    }, 
+  }); 
 }
