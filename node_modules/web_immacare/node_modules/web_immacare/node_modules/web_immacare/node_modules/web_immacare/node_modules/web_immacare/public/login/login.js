@@ -15,6 +15,7 @@ form.addEventListener("submit", async (e) => {
 
       try {
         const res = await fetch("/login", {
+          
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: email, password: password }),
@@ -44,14 +45,17 @@ form.addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    if (response.ok) {
-    } else {
-      alert(data.message); // e.g., "Invalid credentials"
-    }
-  } catch (error) {
-    alert("Error connecting to server");
-    console.error(error);
-  }
+   if (response.ok) { 
+      // ✅ ALL users redirect to header_menu 
+      // The header_menu.js will load the correct page in the iframe based on role 
+      window.location.href = "/header_menu/header_menu.html"; 
+    } else { 
+      alert(data.message || "Login failed"); 
+    } 
+  } catch (error) { 
+    console.error("Login error:", error); 
+    alert("Error connecting to server"); 
+  } 
 });
 //mata
 document.addEventListener("DOMContentLoaded", function () {
@@ -79,3 +83,4 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error(" Element(s) not found. Check your IDs!");
   }
 });
+
