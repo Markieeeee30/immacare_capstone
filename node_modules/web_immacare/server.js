@@ -122,12 +122,13 @@ const DoctorRecommendation = mongoose.model('DoctorRecommendation', DoctorRecomm
 
 // --- Nodemailer Transporter ---
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "immacareclinic@gmail.com",
-        pass: "kemc tadf myzz ofzq",
-    },
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
 });
+
 // --- Initial Route Fix ---
 // --- Initial Route Fix ---
 // 1. Root route: This redirect is correct because 'public' is a static directory.
@@ -207,6 +208,10 @@ app.post("/register", async (req, res) => {
         console.error("Registration error:", err);
         res.status(500).json({ message: "Server error during registration" });
     }
+    console.log("Sending email to:", email);
+await transporter.sendMail(mailOptions);
+console.log("Email sent!");
+
 });
 
 
@@ -237,20 +242,7 @@ app.post("/logout", (req, res) => {
 });
 
 
-app.get("/test-email", async (req, res) => {
-  try {
-    await transporter.sendMail({
-      from: `"ImmaCare+" <${process.env.EMAIL_USER}>`,
-      to: "yourgmail@gmail.com",
-      subject: "Test Email",
-      html: "<p>This is a test email from ImmaCare backend.</p>"
-    });
-    res.send("Test email sent!");
-  } catch (err) {
-    console.error("Email error:", err);
-    res.status(500).send("Email failed");
-  }
-});
+
 
 // =================================================================
 // --- USER MANAGEMENT API ENDPOINTS (Admin) ---
