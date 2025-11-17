@@ -209,6 +209,7 @@ app.post("/register", async (req, res) => {
     }
 });
 
+
 app.get("/verify-email", async (req, res) => {
     try {
         const { token } = req.query;
@@ -233,6 +234,22 @@ app.post("/logout", (req, res) => {
         res.clearCookie('connect.sid');
         res.send({ message: "Logged out successfully" });
     });
+});
+
+
+app.get("/test-email", async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: `"ImmaCare+" <${process.env.EMAIL_USER}>`,
+      to: "yourgmail@gmail.com",
+      subject: "Test Email",
+      html: "<p>This is a test email from ImmaCare backend.</p>"
+    });
+    res.send("Test email sent!");
+  } catch (err) {
+    console.error("Email error:", err);
+    res.status(500).send("Email failed");
+  }
 });
 
 // =================================================================
